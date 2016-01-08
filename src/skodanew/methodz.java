@@ -221,30 +221,30 @@ public class methodz {
     }
 
             
-    public static void addProducts(javax.swing.table.DefaultTableModel model, String kat ){
+        public static void addProducts(javax.swing.table.DefaultTableModel model, String kat, String emriKlikuar){
         Connection c = null;
         Statement stmt = null;
         try {
         Class.forName("org.sqlite.JDBC");
-        c = DriverManager.getConnection("jdbc:sqlite:src\\com\\datBar\\Storage.db");
+        c = DriverManager.getConnection("jdbc:sqlite:contents.db");
         c.setAutoCommit(false);
         System.out.println("Opened database successfully");
 
         stmt = c.createStatement();
         ResultSet rs;
-        if(kat.equals("")){
-             rs = stmt.executeQuery( "SELECT * FROM Produktet;" );
+        if(emriKlikuar.equals("")){
+             rs = stmt.executeQuery( "SELECT * FROM "+kat+";" );
         }else{
-             rs = stmt.executeQuery( "SELECT * FROM Produktet WHERE Kategoria = '"+kat+"';" );
+             rs = stmt.executeQuery( "SELECT * FROM "+kat+" WHERE Emri = '"+kat+"';" );
         }
         while ( rs.next() ) {
             //int id = rs.getInt("id");
             String  emri = rs.getString("Emri");
-            String  cmimi = rs.getString("Cmimi");
+            //String  cmimi = rs.getString("Cmimi");
             //int age  = rs.getInt("age");
             //String  address = rs.getString("address");
             //float salary = rs.getFloat("salary");
-            Object [] row = {emri, cmimi};
+            Object [] row = {emri};
             model.addRow(row);
         }
         rs.close();
@@ -255,6 +255,7 @@ public class methodz {
         System.exit(0);
         }
     }
+
     
     public static void addProducts(javax.swing.table.DefaultTableModel model){
         Connection c = null;
