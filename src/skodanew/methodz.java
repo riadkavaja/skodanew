@@ -9,6 +9,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 /**
  *
@@ -47,6 +48,41 @@ public class methodz {
         }
     }
 
+    static void shtoKlient(String Emri, String Targa, String kodiModelit, String kubikCcm, String gjendjaKm, String Tipi, String kodiMotorrit, String fuqiaKw, String dataUrdherit, String nrShasise, String karburanti, String dataLejes, String nrTelefonit, javax.swing.JLabel jLabelhandleMsg) {
+        Connection c = null;
+        Statement stmt = null;
+        int goterror = 0;
+        try {
+        Class.forName("org.sqlite.JDBC");
+        c = DriverManager.getConnection("jdbc:sqlite:contents.db");
+        c.setAutoCommit(false);
+        System.out.println("Opened database successfully");
+
+        stmt = c.createStatement();
+        String sql = "INSERT INTO Klientet (Emri, Targa, Kodi_Modelit, Kubik, Gjendja_KM, Tipi, Kodi_Motorrit, Fuqia_KWPS, Data_Urdherit, Nr_Shasise, Karburanti, dataLejes, nrTel) " +
+                    "VALUES ('"+Emri+"','"+Targa+"', '"+kodiModelit+"', '"+kubikCcm+"', '"+gjendjaKm+"', '"+Tipi+"', '"+kodiMotorrit+"', '"+fuqiaKw+"', '"+dataUrdherit+"', '"+nrShasise+"', '"+karburanti+"', '"+dataLejes+"', '"+nrTelefonit+"');";
+        stmt.executeUpdate(sql);
+        stmt.close();
+        c.commit();
+        c.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.err.println( e.getMessage() );
+            if(e.getMessage().equals("UNIQUE constraint failed: Produktet.Emri")){
+                System.out.println("Wtfdude?");
+                jLabelhandleMsg.setText("Nje produkt me ate emer ekziston.");
+                goterror = 1;
+            }
+            else{
+                System.out.println("Wtfdude?2");
+                System.exit(0);
+            }
+        }
+        if(goterror == 0){jLabelhandleMsg.setText("Klienti u shtua");}
+        System.out.println("Records created successfully.");
+        //return "?";
+    }
+    
     public static void shtoBilancin(long time1, long time2){
         Connection c = null;
         Statement stmt = null;
@@ -458,21 +494,21 @@ public class methodz {
 
     }*/
 
-    static int getProductID(String emri) {
+    static int getProductID(String emri, String lloji) {
         Connection c = null;
         int id = 0;
         Statement stmt = null;
         try {
         Class.forName("org.sqlite.JDBC");
-        c = DriverManager.getConnection("jdbc:sqlite:src\\com\\datBar\\Storage.db");
+        c = DriverManager.getConnection("jdbc:sqlite:contents.db");
         c.setAutoCommit(false);
         System.out.println("Opened database successfully");
 
         stmt = c.createStatement();
         ResultSet rs;
-        rs = stmt.executeQuery( "SELECT ID_Prod FROM Produktet WHERE Emri = '"+emri+"' ;" );
+        rs = stmt.executeQuery( "SELECT ID_Klientet FROM "+lloji+" WHERE Emri = '"+emri+"' ;" );
         while ( rs.next() ) {
-            id = rs.getInt("ID_Prod");
+            id = rs.getInt("ID_Klientet");
         }
         rs.close();
         stmt.close();
@@ -481,6 +517,36 @@ public class methodz {
         System.err.println( e.getClass().getName() + ": " + e.getMessage() );
         }
         return id;
+    }
+
+    static String getInfo(String lloji, String klienti, String tipi) {
+        Connection c = null;
+        String info = "";
+        Statement stmt = null;
+        try {
+        Class.forName("org.sqlite.JDBC");
+        c = DriverManager.getConnection("jdbc:sqlite:contents.db");
+        c.setAutoCommit(false);
+        System.out.println("Opened database successfully");
+
+        stmt = c.createStatement();
+        ResultSet rs;
+        System.out.println( "SELECT "+tipi+" FROM "+lloji+" WHERE ID_Klientet = '"+klienti+"' ;" );
+        rs = stmt.executeQuery( "SELECT "+tipi+" FROM "+lloji+" WHERE ID_Klientet = '"+klienti+"' ;" );
+        while ( rs.next() ) {
+            info = rs.getString(tipi);
+        }
+        rs.close();
+        stmt.close();
+        c.close();
+        } catch ( Exception e ) {
+        System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+        }
+        return info;
+    }
+
+    static void checkifExists(String klientet, String emri, JTextField jTfEmri) {
+        //Select count(1) from Klientet where Emri = 'asdas'    
     }
 }
 final class Pair {
