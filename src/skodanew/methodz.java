@@ -47,6 +47,42 @@ public class methodz {
             return false;
         }
     }
+    static void ndryshoKlient(String Emri, String Targa, String kodiModelit, String kubikCcm, String gjendjaKm, String Tipi, String kodiMotorrit, String fuqiaKw, String dataUrdherit, String nrShasise, String karburanti, String dataLejes, String nrTelefonit, javax.swing.JLabel jLabelhandleMsg) {
+        Connection c = null;
+        Statement stmt = null;
+        int goterror = 0;
+        try {
+        Class.forName("org.sqlite.JDBC");
+        c = DriverManager.getConnection("jdbc:sqlite:contents.db");
+        c.setAutoCommit(false);
+        System.out.println("Opened database successfully");
+
+        stmt = c.createStatement();
+        String sql = "UPDATE Klientet SET Targa = '"+Targa+"', Kodi_Modelit = '"+kodiModelit+"', Kubik = '"+kubikCcm+"'"
+                + ", Gjendja_KM = '"+gjendjaKm+"', "
+                + "Tipi = '"+Tipi+"', Kodi_Motorrit = '"+kodiMotorrit+"', Fuqia_KWPS = '"+fuqiaKw+"', Data_Urdherit = '"+dataUrdherit+"', Nr_Shasise = '"+nrShasise+"', Karburanti = '"+karburanti+"', dataLejes = '"+dataLejes+"', nrTel='"+nrTelefonit+"'"
+                + "where Emri = '"+Emri+"';";
+        stmt.executeUpdate(sql);
+        stmt.close();
+        c.commit();
+        c.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.err.println( e.getMessage() );
+            if(e.getMessage().equals("UNIQUE constraint failed: Produktet.Emri")){
+                System.out.println("Wtfdude?");
+                jLabelhandleMsg.setText("Nje produkt me ate emer ekziston.");
+                goterror = 1;
+            }
+            else{
+                System.out.println("Not working");
+                System.exit(0);
+            }
+        }
+        if(goterror == 0){jLabelhandleMsg.setText("Klienti u shtua");}
+        System.out.println("Records created successfully.");
+        //return "?";
+    }
 
     static void shtoKlient(String Emri, String Targa, String kodiModelit, String kubikCcm, String gjendjaKm, String Tipi, String kodiMotorrit, String fuqiaKw, String dataUrdherit, String nrShasise, String karburanti, String dataLejes, String nrTelefonit, javax.swing.JLabel jLabelhandleMsg) {
         Connection c = null;
@@ -74,7 +110,7 @@ public class methodz {
                 goterror = 1;
             }
             else{
-                System.out.println("Wtfdude?2");
+                System.out.println("Not working");
                 System.exit(0);
             }
         }
@@ -359,7 +395,7 @@ public class methodz {
                 goterror = 1;
             }
             else{
-                System.out.println("Wtfdude?2");
+                System.out.println("Not working");
                 System.exit(0);
             }
         }
@@ -531,7 +567,6 @@ public class methodz {
 
         stmt = c.createStatement();
         ResultSet rs;
-        System.out.println( "SELECT "+tipi+" FROM "+lloji+" WHERE ID_Klientet = '"+klienti+"' ;" );
         rs = stmt.executeQuery( "SELECT "+tipi+" FROM "+lloji+" WHERE ID_Klientet = '"+klienti+"' ;" );
         while ( rs.next() ) {
             info = rs.getString(tipi);
@@ -545,8 +580,31 @@ public class methodz {
         return info;
     }
 
-    static void checkifExists(String klientet, String emri, JTextField jTfEmri) {
-        //Select count(1) from Klientet where Emri = 'asdas'    
+    static int checkifExists(String tabela, String lloji, String value) {
+        //Select count(1) from Klientet where Emri = 'asdas'  
+        Connection c = null;
+        int info = 0;
+        Statement stmt = null;
+        try {
+        Class.forName("org.sqlite.JDBC");
+        c = DriverManager.getConnection("jdbc:sqlite:contents.db");
+        c.setAutoCommit(false);
+        System.out.println("Opened database successfully");
+
+        stmt = c.createStatement();
+        ResultSet rs;
+        System.out.println( "SELECT count(1+) as rezultati FROM "+tabela+" WHERE "+lloji+" = '"+value+"' ;" );
+        rs = stmt.executeQuery( "SELECT count(1) FROM "+tabela+" WHERE "+lloji+" = '"+value+"' ;" );
+        while ( rs.next() ) {
+            info = rs.getInt(1);
+        }
+        rs.close();
+        stmt.close();
+        c.close();
+        } catch ( Exception e ) {
+        System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+        }
+        return info;
     }
 }
 final class Pair {
