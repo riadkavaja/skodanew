@@ -311,13 +311,24 @@ public class methodz {
         }
         while ( rs.next() ) {
             //int id = rs.getInt("id");
-            String  emri = rs.getString("Emri");
+            if(kat.equals("Klientet")){
+                String  emri = rs.getString("Emri");
             //String  cmimi = rs.getString("Cmimi");
             //int age  = rs.getInt("age");
             //String  address = rs.getString("address");
             //float salary = rs.getFloat("salary");
             Object [] row = {emri};
             model.addRow(row);
+            }
+            else if(kat.equals("Produktet")){
+                String kodi = rs.getString("Kodi");
+                String emri = rs.getString("Emri");
+                String sasia = rs.getString("Sasia");
+                String chyrjes = rs.getString("Cmim_hyrje");
+                String cdalje = rs.getString("Cmim_dalje");
+                Object [] row = {kodi, emri, sasia, chyrjes, cdalje};
+                model.addRow(row);
+            }
         }
         rs.close();
         stmt.close();
@@ -542,9 +553,9 @@ public class methodz {
 
         stmt = c.createStatement();
         ResultSet rs;
-        rs = stmt.executeQuery( "SELECT ID_Klientet FROM "+lloji+" WHERE Emri = '"+emri+"' ;" );
+        rs = stmt.executeQuery( "SELECT ID_"+lloji+" FROM "+lloji+" WHERE Emri = '"+emri+"' ;" );
         while ( rs.next() ) {
-            id = rs.getInt("ID_Klientet");
+            id = rs.getInt("ID_"+lloji);
         }
         rs.close();
         stmt.close();
@@ -567,7 +578,7 @@ public class methodz {
 
         stmt = c.createStatement();
         ResultSet rs;
-        rs = stmt.executeQuery( "SELECT "+tipi+" FROM "+lloji+" WHERE ID_Klientet = '"+klienti+"' ;" );
+        rs = stmt.executeQuery( "SELECT "+tipi+" FROM "+lloji+" WHERE ID_"+lloji+" = '"+klienti+"' ;" );
         while ( rs.next() ) {
             info = rs.getString(tipi);
         }
@@ -606,7 +617,81 @@ public class methodz {
         }
         return info;
     }
+
+    static void ndryshoProdukt(String text, String text0, String text1, String text2, String text3, String text4, javax.swing.JLabel jLabelhandleMsg) {
+        Connection c = null;
+        Statement stmt = null;
+        int goterror = 0;
+        try {
+        Class.forName("org.sqlite.JDBC");
+        c = DriverManager.getConnection("jdbc:sqlite:contents.db");
+        c.setAutoCommit(false);
+        System.out.println("Opened database successfully");
+
+        stmt = c.createStatement();
+        System.out.println("UPDATE Produktet SET Emri = '"+text0+"', Sasia = '"+text1+"'"
+                + ", Cmim_hyrje = '"+text2+"', Cmim_dalje = '"+text3+"', Pershkrimi = '"+text4+"'"
+                + " WHERE Kodi = "+text+";");
+        String sql = "UPDATE Produktet SET Kodi = '"+text+"', Emri = '"+text0+"', Sasia = '"+text1+"'"
+                + ", Cmim_hyrje = '"+text2+"', "
+                + "Cmim_dalje = '"+text3+"', Pershkrimi = '"+text4+"';";
+        stmt.executeUpdate(sql);
+        stmt.close();
+        c.commit();
+        c.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.err.println( e.getMessage() );
+            if(e.getMessage().equals("UNIQUE constraint failed: Produktet.Emri")){
+                jLabelhandleMsg.setText("Nje produkt me ate emer ekziston.");
+                goterror = 1;
+            }
+            else{
+                System.out.println("Not working");
+                System.exit(0);
+            }
+        }
+        if(goterror == 0){jLabelhandleMsg.setText("Klienti u shtua");}
+        System.out.println("Records created successfully.");
+        //return "?";    }
+
+        }
+    static void shtoProdukt(String text, String text0, String text1, String text2, String text3, String text4, javax.swing.JLabel jLabelhandleMsg) {
+        Connection c = null;
+        Statement stmt = null;
+        int goterror = 0;
+        try {
+        Class.forName("org.sqlite.JDBC");
+        c = DriverManager.getConnection("jdbc:sqlite:contents.db");
+        c.setAutoCommit(false);
+        System.out.println("Opened database successfully");
+
+        stmt = c.createStatement();
+        String sql = "INSERT INTO Produktet (Kodi, Emri, Sasia, Cmim_hyrje, Cmim_dalje, Pershkrimi) " +
+                    "VALUES ('"+text+"','"+text0+"', '"+text1+"', '"+text2+"', '"+text3+"', '"+text+"');";
+        stmt.executeUpdate(sql);
+        stmt.close();
+        c.commit();
+        c.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.err.println( e.getMessage() );
+            if(e.getMessage().equals("UNIQUE constraint failed: Produktet.Emri")){
+                System.out.println("Wtfdude?");
+                jLabelhandleMsg.setText("Nje produkt me ate emer ekziston.");
+                goterror = 1;
+            }
+            else{
+                System.out.println("Not working");
+                System.exit(0);
+            }
+        }
+        if(goterror == 0){jLabelhandleMsg.setText("Klienti u shtua");}
+        System.out.println("Records created successfully.");
+        //return "?";    }
+    }
 }
+
 final class Pair {
     private final String first;
     private final int second;
