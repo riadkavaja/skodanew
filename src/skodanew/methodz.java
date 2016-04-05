@@ -79,7 +79,7 @@ public class methodz {
                 System.exit(0);
             }
         }
-        if(goterror == 0){jLabelhandleMsg.setText("Klienti u shtua");}
+        if(goterror == 0){jLabelhandleMsg.setText("The dhenat u aktualizuan.");}
         System.out.println("Records created successfully.");
         //return "?";
     }
@@ -307,7 +307,7 @@ public class methodz {
         if(emriKlikuar.equals("")){
              rs = stmt.executeQuery( "SELECT * FROM "+kat+";" );
         }else{
-             rs = stmt.executeQuery( "SELECT * FROM "+kat+" WHERE Emri = '"+kat+"';" );
+             rs = stmt.executeQuery( "SELECT * FROM "+kat+" WHERE Emri = '"+emriKlikuar+"';" );
         }
         while ( rs.next() ) {
             //int id = rs.getInt("id");
@@ -329,6 +329,36 @@ public class methodz {
                 Object [] row = {kodi, emri, sasia, chyrjes, cdalje};
                 model.addRow(row);
             }
+        }
+        rs.close();
+        stmt.close();
+        c.close();
+        } catch ( Exception e ) {
+        System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+        System.exit(0);
+        }
+    }
+        public static void shtoProdukteFature(javax.swing.table.DefaultTableModel model, String kat, String Kodi){
+        Connection c = null;
+        Statement stmt = null;
+        try {
+        Class.forName("org.sqlite.JDBC");
+        c = DriverManager.getConnection("jdbc:sqlite:contents.db");
+        c.setAutoCommit(false);
+        System.out.println("Opened database successfully");
+
+        stmt = c.createStatement();
+        ResultSet rs;
+        rs = stmt.executeQuery( "SELECT * FROM "+kat+" WHERE Kodi = '"+Kodi+"';" );
+        while ( rs.next() ) {
+            //int id = rs.getInt("id");
+            String kodi = rs.getString("Kodi");
+            String emri = rs.getString("Emri");
+            String sasia = rs.getString("Sasia");
+            String chyrjes = rs.getString("Cmim_hyrje");
+            String cdalje = rs.getString("Cmim_dalje");
+            Object [] row = {kodi, emri, sasia, chyrjes, cdalje};
+            model.addRow(row);
         }
         rs.close();
         stmt.close();
@@ -632,9 +662,9 @@ public class methodz {
         System.out.println("UPDATE Produktet SET Emri = '"+text0+"', Sasia = '"+text1+"'"
                 + ", Cmim_hyrje = '"+text2+"', Cmim_dalje = '"+text3+"', Pershkrimi = '"+text4+"'"
                 + " WHERE Kodi = "+text+";");
-        String sql = "UPDATE Produktet SET Kodi = '"+text+"', Emri = '"+text0+"', Sasia = '"+text1+"'"
-                + ", Cmim_hyrje = '"+text2+"', "
-                + "Cmim_dalje = '"+text3+"', Pershkrimi = '"+text4+"';";
+        String sql = "UPDATE Produktet SET Emri = '"+text0+"', Sasia = '"+text1+"'"
+                + ", Cmim_hyrje = '"+text2+"', Cmim_dalje = '"+text3+"', Pershkrimi = '"+text4+"'"
+                + " WHERE Kodi = "+text+";";
         stmt.executeUpdate(sql);
         stmt.close();
         c.commit();
