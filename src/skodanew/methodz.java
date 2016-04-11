@@ -338,7 +338,7 @@ public class methodz {
         System.exit(0);
         }
     }
-        public static void shtoProdukteFature(javax.swing.table.DefaultTableModel model, String kat, String Kodi){
+        public static void shtoProdukteFature(javax.swing.table.DefaultTableModel model, String kat, String Kodi, int sas){
         Connection c = null;
         Statement stmt = null;
         try {
@@ -354,10 +354,9 @@ public class methodz {
             //int id = rs.getInt("id");
             String kodi = rs.getString("Kodi");
             String emri = rs.getString("Emri");
-            String sasia = rs.getString("Sasia");
             String chyrjes = rs.getString("Cmim_hyrje");
             String cdalje = rs.getString("Cmim_dalje");
-            Object [] row = {kodi, emri, sasia, chyrjes, cdalje};
+            Object [] row = {sas, kodi, emri, chyrjes, cdalje};
             model.addRow(row);
         }
         rs.close();
@@ -369,7 +368,6 @@ public class methodz {
         }
     }
 
-    
     public static void addProducts(javax.swing.table.DefaultTableModel model){
         Connection c = null;
         Statement stmt = null;
@@ -634,7 +632,7 @@ public class methodz {
 
         stmt = c.createStatement();
         ResultSet rs;
-        System.out.println( "SELECT count(1+) as rezultati FROM "+tabela+" WHERE "+lloji+" = '"+value+"' ;" );
+        System.out.println( "SELECT count(1) FROM "+tabela+" WHERE "+lloji+" = '"+value+"' ;" );
         rs = stmt.executeQuery( "SELECT count(1) FROM "+tabela+" WHERE "+lloji+" = '"+value+"' ;" );
         while ( rs.next() ) {
             info = rs.getInt(1);

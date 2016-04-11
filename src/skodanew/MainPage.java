@@ -617,7 +617,7 @@ public class MainPage extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Kodi", "Emri", "Sasia", "Cmimi Hyrjes", "Cmimi Daljes"
+                "Sasia", "Kodi", "Emri", "Cmimi Hyrjes", "Cmimi Daljes"
             }
         ));
         jTableFatura.getTableHeader().setReorderingAllowed(false);
@@ -1712,14 +1712,38 @@ private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     }//GEN-LAST:event_jBtnProdRuajActionPerformed
 
     private void jBtnProdShtoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnProdShtoActionPerformed
-        String kodi = (String) jTableProduktet.getValueAt(prodSelectedx, 0);
-        methodz.shtoProdukteFature(modelFatura, "Produktet", kodi);
+        String kodi = (String) jTableProduktet.getValueAt(prodSelectedx, 1);
+        int sa = saProdukte(jTableFatura, kodi);
+        if(sa > 1){
+        }else{
+            methodz.shtoProdukteFature(modelFatura, "Produktet", kodi, 1);
+        }
     }//GEN-LAST:event_jBtnProdShtoActionPerformed
 
+    private int saProdukte(javax.swing.JTable table, String kodi){
+        int c = table.getRowCount();
+        System.out.println("c"+c);
+        boolean found = false;
+        for(int i=0;i<c;i++){
+            if(kodi.equals(table.getValueAt(i, 1))){
+                int sasia = (int) table.getValueAt(i, 0);
+                sasia++;
+                table.setValueAt(sasia, i, 0);
+                System.out.println(sasia);
+                return sasia;
+            }
+        }
+        return 1;
+    }
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         int aExiston = methodz.checkifExists("Produktet", "Kodi", jTfKodiFature.getText());
         if(aExiston>0){
-            methodz.shtoProdukteFature(modelFatura, "Produktet", jTfKodiFature.getText());
+            int sa = saProdukte(jTableFatura, jTfKodiFature.getText());
+            if(sa > 1){
+                
+            }else{
+                methodz.shtoProdukteFature(modelFatura, "Produktet", jTfKodiFature.getText(), 1);
+            }
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
