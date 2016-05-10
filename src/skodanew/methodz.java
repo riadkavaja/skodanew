@@ -128,7 +128,7 @@ public class methodz {
         
         try {
         Class.forName("org.sqlite.JDBC");
-        c = DriverManager.getConnection("jdbc:sqlite:src\\com\\datBar\\Storage.db");
+        c = DriverManager.getConnection("jdbc:sqlite:contents.db");
         stmt = c.createStatement();
         ResultSet rs = null;
         if(data1.after(data2)){
@@ -173,7 +173,7 @@ public class methodz {
         java.sql.Timestamp data2 = new java.sql.Timestamp(time2);
         try {
         Class.forName("org.sqlite.JDBC");
-        c = DriverManager.getConnection("jdbc:sqlite:src\\com\\datBar\\Storage.db");
+        c = DriverManager.getConnection("jdbc:sqlite:contents.db");
         c.setAutoCommit(false);
         System.out.println("Opened database successfully");
 
@@ -183,7 +183,7 @@ public class methodz {
              rs = stmt.executeQuery("SELECT SUM(ProduktiShitur.Sasia) as Sassia, "+
                     "Produktet."+tipi+"  as value "+
                     "FROM ProduktiShitur  "+
-                    "INNER JOIN Produktet ON ProduktiShitur.ID_Prod = Produktet.ID_Prod "+
+                    "INNER JOIN Produktet ON ProduktiShitur.ID_Prod = Produktet.ID_Produktet "+
                     "INNER JOIN Fatura ON ProduktiShitur.ID_Fatura = Fatura.ID_Fatura "+
                     "WHERE dataOra >= date('now','start of day') "+
                     "GROUP BY value ORDER BY Sassia DESC;");
@@ -192,16 +192,16 @@ public class methodz {
              rs = stmt.executeQuery("SELECT SUM(ProduktiShitur.Sasia) as Sassia, "+
                     "Produktet."+tipi+"  as value "+
                     "FROM ProduktiShitur  "+
-                    "INNER JOIN Produktet ON ProduktiShitur.ID_Prod = Produktet.ID_Prod "+
+                    "INNER JOIN Produktet ON ProduktiShitur.ID_Prod = Produktet.ID_Produktet "+
                     "INNER JOIN Fatura ON ProduktiShitur.ID_Fatura = Fatura.ID_Fatura "+
-                    "WHERE dataOra >= datetime('now', '-6 days', 'localtime') AND datetime('now', 'localtime') "+
+                    "WHERE Fatura.DataOra BETWEEN datetime('now', '-6 days', 'localtime') AND datetime('now', 'localtime') "+
                     "GROUP BY value ORDER BY Sassia DESC;");
              System.out.print("SELECT SUM(ProduktiShitur.Sasia) as Sassia, "+
                     "Produktet."+tipi+"  as value "+
                     "FROM ProduktiShitur  "+
-                    "INNER JOIN Produktet ON ProduktiShitur.ID_Prod = Produktet.ID_Prod "+
+                    "INNER JOIN Produktet ON ProduktiShitur.ID_Prod = Produktet.ID_Produktet "+
                     "INNER JOIN Fatura ON ProduktiShitur.ID_Fatura = Fatura.ID_Fatura "+
-                    "WHERE dataOra >= datetime('now', '-6 days', 'localtime') AND datetime('now', 'localtime') "+
+                    "WHERE Fatura.DataOra BETWEEN datetime('now', '-6 days', 'localtime') AND datetime('now', 'localtime') "+
                     "GROUP BY value ORDER BY Sassia DESC;");
              System.out.println("dafuq?");
         }
@@ -209,18 +209,25 @@ public class methodz {
              rs = stmt.executeQuery("SELECT SUM(ProduktiShitur.Sasia) as Sassia, "+
                     "Produktet."+tipi+"  as value "+
                     "FROM ProduktiShitur  "+
-                    "INNER JOIN Produktet ON ProduktiShitur.ID_Prod = Produktet.ID_Prod "+
+                    "INNER JOIN Produktet ON ProduktiShitur.ID_Prod = Produktet.ID_Produktet "+
                     "INNER JOIN Fatura ON ProduktiShitur.ID_Fatura = Fatura.ID_Fatura "+
-                    "BETWEEN datetime('now', 'start of month', 'localtime') AND datetime('now', 'localtime')"+
+                    "WHERE Fatura.DataOra BETWEEN datetime('now', 'start of month', 'localtime') AND datetime('now', 'localtime')"+
+                    "GROUP BY value ORDER BY Sassia DESC;");
+             System.out.println("SELECT SUM(ProduktiShitur.Sasia) as Sassia, "+
+                    "Produktet."+tipi+"  as value "+
+                    "FROM ProduktiShitur  "+
+                    "INNER JOIN Produktet ON ProduktiShitur.ID_Prod = Produktet.ID_Produktet "+
+                    "INNER JOIN Fatura ON ProduktiShitur.ID_Fatura = Fatura.ID_Fatura "+
+                    "WHERE Fatura.DataOra BETWEEN datetime('now', 'start of month', 'localtime') AND datetime('now', 'localtime')"+
                     "GROUP BY value ORDER BY Sassia DESC;");
         }
         else if(koha == "vjetor"){
              rs = stmt.executeQuery("SELECT SUM(ProduktiShitur.Sasia) as Sassia, "+
                     "Produktet."+tipi+"  as value "+
                     "FROM ProduktiShitur  "+
-                    "INNER JOIN Produktet ON ProduktiShitur.ID_Prod = Produktet.ID_Prod "+
+                    "INNER JOIN Produktet ON ProduktiShitur.ID_Prod = Produktet.ID_Produktet "+
                     "INNER JOIN Fatura ON ProduktiShitur.ID_Fatura = Fatura.ID_Fatura "+
-                    "BETWEEN datetime('now', 'start of year', 'localtime') AND datetime('now', 'localtime')"+
+                    "WHERE Fatura.DataOra BETWEEN datetime('now', 'start of year', 'localtime') AND datetime('now', 'localtime')"+
                     "GROUP BY value ORDER BY Sassia DESC;");
         }
         if(koha == "caktume"){
@@ -228,7 +235,7 @@ public class methodz {
                 rs = stmt.executeQuery("SELECT SUM(ProduktiShitur.Sasia) as Sassia, "+
                         "Produktet."+tipi+"  as value "+
                         "FROM ProduktiShitur  "+
-                        "INNER JOIN Produktet ON ProduktiShitur.ID_Prod = Produktet.ID_Prod "+
+                        "INNER JOIN Produktet ON ProduktiShitur.ID_Prod = Produktet.ID_Produktet "+
                         "INNER JOIN Fatura ON ProduktiShitur.ID_Fatura = Fatura.ID_Fatura "+
                         "WHERE Fatura.DataOra BETWEEN '"+data2+"' and '"+data1+"'"+
                         "GROUP BY value ORDER BY Sassia DESC;");
@@ -236,7 +243,7 @@ public class methodz {
                 rs = stmt.executeQuery("SELECT SUM(ProduktiShitur.Sasia) as Sassia, "+
                         "Produktet."+tipi+"  as value "+
                         "FROM ProduktiShitur  "+
-                        "INNER JOIN Produktet ON ProduktiShitur.ID_Prod = Produktet.ID_Prod "+
+                        "INNER JOIN Produktet ON ProduktiShitur.ID_Prod = Produktet.ID_Produktet "+
                         "INNER JOIN Fatura ON ProduktiShitur.ID_Fatura = Fatura.ID_Fatura "+
                         "WHERE Fatura.DataOra BETWEEN '"+data1+"' and '"+data2+"'"+
                         "GROUP BY value ORDER BY Sassia DESC;");
@@ -266,16 +273,16 @@ public class methodz {
         int totali = 0;
         try {
         Class.forName("org.sqlite.JDBC");
-        c = DriverManager.getConnection("jdbc:sqlite:src\\com\\datBar\\Storage.db");
+        c = DriverManager.getConnection("jdbc:sqlite:contents.db");
         c.setAutoCommit(false);
         System.out.println("Opened database successfully");
 
         stmt = c.createStatement();
         ResultSet rs;
-            rs = stmt.executeQuery("SELECT SUM(ProduktiShitur.Sasia*Produktet.Cmimi) as Cmimi, ProduktiShitur.ID_Fatura  as faturaid " +
+            rs = stmt.executeQuery("SELECT SUM(ProduktiShitur.Sasia*Produktet.Cmim_dalje) as Cmimi, ProduktiShitur.ID_Fatura  as faturaid " +
             "FROM ProduktiShitur  " +
             "INNER JOIN Produktet " +
-            "ON ProduktiShitur.ID_Prod = Produktet.ID_Prod " +
+            "ON ProduktiShitur.ID_Prod = Produktet.ID_Produktet " +
             "GROUP BY faturaid ORDER BY Cmimi DESC;");
         while ( rs.next() ) {
             cmimi = rs.getInt("Cmimi");
@@ -450,7 +457,7 @@ public class methodz {
         int goterror = 0;
         try {
         Class.forName("org.sqlite.JDBC");
-        c = DriverManager.getConnection("jdbc:sqlite:src\\com\\datBar\\Storage.db");
+        c = DriverManager.getConnection("jdbc:sqlite:contents.db");
         c.setAutoCommit(false);
         System.out.println("Opened database successfully");
 
@@ -512,15 +519,15 @@ public class methodz {
     }
 
     static void shtoShitje(int faturaID, int emriID, String sasia) {
-        String kat = getKategori(emriID);
-        fixKat(kat);
+//        String kat = getKategori(emriID);
+//        fixKat(kat);
         Connection c = null;
         Statement stmt = null;
         int row = -1;
         int goterror = 0;
         try {
         Class.forName("org.sqlite.JDBC");
-        c = DriverManager.getConnection("jdbc:sqlite:src\\com\\datBar\\Storage.db");
+        c = DriverManager.getConnection("jdbc:sqlite:contents.db");
         c.setAutoCommit(false);
         System.out.println("Opened database successfully");
 
@@ -581,7 +588,10 @@ public class methodz {
 
         stmt = c.createStatement();
         ResultSet rs;
-        rs = stmt.executeQuery( "SELECT ID_"+lloji+" FROM "+lloji+" WHERE Emri = '"+emri+"' ;" );
+        String lloji2 = lloji;
+        //if(lloji == "Produktet"){lloji2 = "Prod";}
+        System.out.println("SELECT ID_"+lloji2+" FROM "+lloji+" WHERE Emri = '"+emri+"' ;" );
+        rs = stmt.executeQuery( "SELECT ID_"+lloji2+" FROM "+lloji+" WHERE Emri = '"+emri+"' ;" );
         while ( rs.next() ) {
             id = rs.getInt("ID_"+lloji);
         }
@@ -618,7 +628,31 @@ public class methodz {
         }
         return info;
     }
+    static int countRows(String tabela, String lloji, String emri){
+        Connection c = null;
+        int info = 0;
+        Statement stmt = null;
+        try {
+        Class.forName("org.sqlite.JDBC");
+        c = DriverManager.getConnection("jdbc:sqlite:contents.db");
+        c.setAutoCommit(false);
+        System.out.println("Opened database successfully");
 
+        stmt = c.createStatement();
+        ResultSet rs;
+        rs = stmt.executeQuery( "SELECT count(*) FROM "+tabela+" where "+lloji+" = '"+emri+"' ;" );
+        while ( rs.next() ) {
+            info = rs.getInt(1);
+        }
+        rs.close();
+        stmt.close();
+        c.close();
+        } catch ( Exception e ) {
+        System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+        }
+        return info;
+    }
+    
     static int checkifExists(String tabela, String lloji, String value) {
         //Select count(1) from Klientet where Emri = 'asdas'  
         Connection c = null;
@@ -679,7 +713,7 @@ public class methodz {
                 System.exit(0);
             }
         }
-        if(goterror == 0){jLabelhandleMsg.setText("Klienti u shtua");}
+        if(goterror == 0){jLabelhandleMsg.setText("Te dhenat u aktualizuan");}
         System.out.println("Records created successfully.");
         //return "?";    }
 
